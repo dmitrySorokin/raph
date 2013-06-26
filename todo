@@ -1,0 +1,9 @@
+
+Make him understand the difference of mines and main dungeon
+Make a PushBoulders() before Search()
+Tile().canMoveDiagonally instead of "is door and tile.x!=blahlbah"
+    Use this for tiles that I don't "fit" into
+    Check which way the door is in case someone digs both walls connected to it and Eeek gets confused
+Make him be aware of which monsters that are guaranteed to be hostile, and make him wait instead of approach the mob
+Make a HealSelf(), perhaps cooperating with a Retreat()
+Make .can() return the number of moves needed untill it's action can start performing so we can pick up stuff on the way to kicking a door
