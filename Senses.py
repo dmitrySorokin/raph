@@ -133,11 +133,11 @@ class Senses(EeekObject):
         Kernel.instance.Hero.isEngulfed = True
 
     def shopkeep_door(self):
-        door = [tile for tile in Kernel.instance.curTile().neighbours() if tile.glyph == ']'][0]
+        door = [tile for tile in Kernel.instance.curTile().neighbours() if tile.glyph == '+'][0]
         door.shopkeepDoor = True
 
     def locked_door(self):
-        if Kernel.instance.Hero.lastActionedTile and Kernel.instance.Hero.lastActionedTile.glyph == ']':
+        if Kernel.instance.Hero.lastActionedTile and Kernel.instance.Hero.lastActionedTile.glyph == '+':
             Kernel.instance.Hero.lastActionedTile.locked = True
 
     def found_trap(self, type):

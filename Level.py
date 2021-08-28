@@ -1,6 +1,7 @@
 from Kernel import *
 from Tile import *
 
+
 class Level:
     def __init__(self, dlvl):
         Kernel.instance.log("Making a level")
@@ -20,8 +21,10 @@ class Level:
 
     def find(self, args):
         return [tile for tile in self.tiles if tile.find(args)]
+
     def findAttackableMonsters(self):
         return [tile for tile in self.tiles if tile.monster and tile.monster.isAttackable()]
+
     def findUnidentifiedItems(self):
         ret = []
         for tile in self.tiles:
@@ -29,8 +32,9 @@ class Level:
                 if [item for item in tile.items if not item.appearance]:
                     ret.append(tile)
         return ret
+
     def findDoors(self):
-        return [tile for tile in self.tiles if tile.glyph == ']']
+        return [tile for tile in self.tiles if tile.glyph == '+']
 
     def update(self):
         FBTiles = Kernel.instance.FramebufferParser.mapTiles()

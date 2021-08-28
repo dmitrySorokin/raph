@@ -79,4 +79,4 @@ class Hero(EeekObject):
         return False
 
     def canOpen(self, tile):
-        return not tile.shopkeepDoor and tile.glyph == ']' and (tile.locked or Kernel.instance.Hero.legShape) and tile.isAdjacent(Kernel.instance.curTile())
+        return not tile.shopkeepDoor and tile.glyph == '+' and (tile.locked or Kernel.instance.Hero.legShape) and tile.isAdjacent(Kernel.instance.curTile())

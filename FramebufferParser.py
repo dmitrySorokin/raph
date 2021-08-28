@@ -10,6 +10,7 @@ from TermColor import *
 
 from myconstants import *
 
+
 class FBTile:
     def __init__(self):
         self.char = ' '
@@ -19,6 +20,7 @@ class FBTile:
     def set(self, char, color):
         self.char = char
         self.color = color
+
 
 class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
     def __init__(self):

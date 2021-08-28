@@ -12,7 +12,7 @@ class OpenDoors:
                 return True
 
         Kernel.instance.log("Checking for adjacent doors..")
-        doors = Kernel.instance.curTile().adjacent({'glyph': ']'})
+        doors = Kernel.instance.curTile().adjacent({'glyph': '+'})
         for door in doors:
             if Kernel.instance.Hero.canOpen(door):
                 self.goal = door
