@@ -7,7 +7,8 @@ from Findable  import *
 class Tile(Findable):
     dngFeatures = ['.', '}', '{', '#', '<', '>', '+', '^', '|', '-', '~', ' ']
     dngItems    = ['`', '0', '*', '$', '_', '[', '%', ')', '(', '/', '?', '!', '"', '=', '+', '\\']
-    dngMonsters = map(chr, range(ord('a'), ord('z')+1) + range(ord('A'), ord('Z')+1) + range(ord('1'), ord('5')+1)) + ['@', "'", '&', ';', ':']
+    dngMonsters = map(chr, range(ord('a'), ord('z')+1) + range(ord('A'), ord('Z')+1) + range(ord('1'), ord('5')+1)) + \
+                  ['@', "'", '&', ';', ':', ']']
     walkables    = {'.': 1,
                     '}': 1,
                     '{': 1,
