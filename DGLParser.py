@@ -21,13 +21,14 @@ class DGLParser(SocketObserver, EeekObject):
         self.state = STATE_NOT_LOGGEDIN
 
         Kernel.instance.log("Setting state to STATE_NOT_LOGGEDIN")
+
     def parse(self, msg):
         # Not logged in
         if self.state == STATE_NOT_LOGGEDIN:
             for line in self.dgl_line:
                 if msg.find(line) >= 0:
                     Kernel.instance.log("Logging in ..")
-                    Kernel.instance.send("lEeek\ryoyoma99\r1")
+                    Kernel.instance.send("l\rnewrlbot\rsber1scool\r")
                     self.state = STATE_AUTHENTICATE
         #Authenticate OK?
         if self.state == STATE_AUTHENTICATE:

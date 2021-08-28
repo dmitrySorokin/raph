@@ -1,16 +1,17 @@
 from SignalReceiver import *
 
-from RandomWalk      import *
-from Explore         import *
-from AttackMonster   import *
-from OpenDoors       import *
-from GetPhatz        import *
-from Descend         import *
-from Search          import *
-from SearchSpot      import *
-from FixStatus       import *
-from RestoreHP       import *
-from DipForExcalibur import *
+from Actions.RandomWalk import *
+from Actions.Explore import *
+from Actions.AttackMonster import *
+from Actions.OpenDoors import *
+from Actions.GetPhatz import *
+from Actions.Descend import *
+from Actions.Search import *
+from Actions.SearchSpot import *
+from Actions.FixStatus import *
+from Actions.RestoreHP import *
+from Actions.DipForExcalibur import *
+
 
 class Brain(SignalReceiver):
     def __init__(self, name):

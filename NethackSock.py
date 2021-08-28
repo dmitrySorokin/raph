@@ -18,6 +18,21 @@ class NethackSock(Thread, EeekObject):
     def connect(self, host, port):
         self.s.connect((host, port))
         self.s.send("\xFF\xFB\x18\xFF\xFA\x18\x00xterm-color\xFF\xF0\xFF\xFC\x20\xFF\xFC\x23\xFF\xFC\x27\xFF\xFE\x03\xFF\xFB\x01\xFF\xFD\x05\xFF\xFB\x21\xFF\xFB\x1F\xFF\xFA\x1F\x00\x50\x00\x18\xFF\xF0")
+        time.sleep(0.1)
+        self.s.send("l")
+        time.sleep(0.1)
+        self.s.send("newrlbot\n")
+        time.sleep(0.1)
+        self.s.send("sber1scool\n")
+        time.sleep(0.1)
+        self.s.send("p\n")
+        time.sleep(0.1)
+        self.s.send("y\n")
+        time.sleep(0.1)
+        self.s.send("\n")
+        time.sleep(0.1)
+        Kernel.instance.sendSignal("game_start")
+
 
     def send(self, msg):
         return self.s.send(msg)

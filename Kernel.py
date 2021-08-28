@@ -57,7 +57,9 @@ class Kernel:
     def send(self, line):
         self.log("Sent string:" + line)
         return self.NethackSock.send(line)
+
     def sockRecv(self, line):
+        self.log('sockRecv ' + line)
         for observer in self.observers:
             observer.parse(line)
 

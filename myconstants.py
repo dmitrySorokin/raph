@@ -15,7 +15,7 @@ HOST = "nethack.alt.org"
 PORT = 23
 
 HOST = "nethack.fribyte.uib.no"
-PORT = 1000
+PORT = 23
 
 WIDTH  = 80
 HEIGHT = 24
