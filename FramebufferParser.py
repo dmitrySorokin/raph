@@ -29,16 +29,16 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
         SocketObserver.__init__(self)
 
         self.gameStarted = False
-        self.screen      = []
+        self.screen = []
 
-        self.state       = ""
-        self.y           = 0
-        self.x           = 0
-        self.color       = TermColor()
+        self.state = ""
+        self.y = 0
+        self.x = 0
+        self.color = TermColor()
 
-        self._file       = open("logs/frames.txt", "wa")
-        self.firstParse  = True
-        self.last        = ""
+        self._file = open("logs/frames.txt", "wa")
+        self.firstParse = True
+        self.last = ""
 
         for x in range(0, WIDTH*HEIGHT):
             self.screen.append(FBTile())
@@ -86,12 +86,16 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
 
     def getChars(self):
         return "".join(x.char for x in self.screen)
+
     def mapLines(self):
         return "".join(x.char for x in self.screen[WIDTH:-2*WIDTH])
+
     def topLine(self):
         return "".join(x.char for x in self.screen[:WIDTH])
+
     def botLines(self):
         return "".join(x.char for x in self.screen[22*WIDTH:])
+
     def getRowLine(self, row):
         if row < 1 or row > 24:
             return ""

@@ -1,24 +1,26 @@
 from Kernel import *
 from EeekObject import *
 
+
 class Hero(EeekObject):
     def __init__(self):
         EeekObject.__init__(self)
 
-        self.x          = None
-        self.y          = None
+        self.x = None
+        self.y = None
         self.beforeMove = None
-        self.tmpCount   = 0
+        self.tmpCount = 0
 
-        self.blind      = False
-        self.legShape   = True
+        self.blind = False
+        self.legShape = True
 
-        self.inBearTrap     = False
-        self.inPit          = False
-        self.isEngulfed     = False
-        self.isPolymorphed  = False
+        self.inBearTrap = False
+        self.inPit = False
+        self.isEngulfed = False
+        self.isPolymorphed = False
 
         self.lastActionedTile = None # I sersiouly need to #enhance my english skills :'(
+
     def coords(self):
         return (self.y, self.x)
 
