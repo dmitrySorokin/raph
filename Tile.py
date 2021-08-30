@@ -51,7 +51,7 @@ class Tile(Findable):
         self.monster = None
         self.is_door = glyph == '+'
 
-        # fix for mimic monster 
+        # fix for mimic monster
         glyph = 'm' if glyph == ']' else glyph
 
         if glyph in Tile.dngFeatures:

@@ -20,6 +20,7 @@ class Hero(EeekObject):
         self.isPolymorphed = False
 
         self.hanger = None
+        self.have_food = True
 
         self.lastActionedTile = None # I sersiouly need to #enhance my english skills :'(
 
@@ -79,7 +80,7 @@ class Hero(EeekObject):
                 neighbour.searched = True
 
     def eat(self):
-        Kernel.instance.send("Hero::eat")
+        Kernel.instance.log("Hero::eat")
         Kernel.instance.send("e")
 
     def canPickupHeavy(self):

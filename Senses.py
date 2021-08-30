@@ -38,7 +38,8 @@ class Senses(EeekObject):
             "You return to (human|) form":                                   ['no_poly'],
             "There is a teleportation trap here":                            ['found_trap', 'teleport'],
             r".* eat it\? \[ynq\] \(n\)":              ['eat_it'],
-            "You see no door there.": ['no_door']
+            "You see no door there.": ['no_door'],
+            "You don't have anything to eat.": ['no_food']
         }
 
 
@@ -104,8 +105,7 @@ class Senses(EeekObject):
         match = Kernel.instance.searchTop("What do you want to eat\? \[(.*) or \?\*\]")
         if match:
             self.eat(match)
-
-        if Kernel.instance.searchTop("\? \[(.*?)\]"):
+        elif Kernel.instance.searchTop("\? \[(.*?)\]"):
             Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.FramebufferParser.topLine())
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
@@ -114,13 +114,13 @@ class Senses(EeekObject):
         # if match:
         #     (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
         #     Kernel.instance.log('hui')
-        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)")
-        match_hanger = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
+        match_status = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)")
+        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
 
-        if match:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.hanger) = map(int, match.groups()[:-1]) + [match.groups()[-1]]
-        elif match_hanger:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns) = map(int, match_hanger.groups())
+        if match_status:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match_status.groups()[:-1]) + [match_status.groups()[-1]]
+        elif match:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match.groups()) + [None]
         else:
             Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
 
@@ -206,7 +206,6 @@ class Senses(EeekObject):
             Kernel.instance.send('f')
         else:
             Kernel.instance.send(options[0])
-        Kernel.instance.dontUpdate()
 
     def is_weak(self):
         Kernel.instance.sendSignal("s_isWeak")
@@ -248,6 +247,9 @@ class Senses(EeekObject):
 
                     Kernel.instance.log("Setting %s to be inside a shop." % tile)
                     tile.inShop = True
+
+    def no_food(self):
+        Kernel.instance.Hero.have_food = False
 
 
     def graffiti_on_floor(self):

@@ -8,8 +8,7 @@ class Eat:
         self.goal = None
 
     def can(self):
-        return False
-        if Kernel.instance.Hero.hanger is not None:
+        if Kernel.instance.Hero.hanger in ['Hungry', 'Weak', 'Fainting'] and Kernel.instance.Hero.have_food:
             return True
 
     def execute(self):
