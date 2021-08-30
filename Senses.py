@@ -37,7 +37,8 @@ class Senses(EeekObject):
             "You get expelled":                                              ['got_expelled'],
             "You return to (human|) form":                                   ['no_poly'],
             "There is a teleportation trap here":                            ['found_trap', 'teleport'],
-
+            r".* eat it\? \[ynq\] \(n\)":              ['eat_it'],
+            "You see no door there.": ['no_door']
         }
 
 
@@ -100,18 +101,28 @@ class Senses(EeekObject):
             Kernel.instance.send("\x1b")
             Kernel.instance.dontUpdate()
 
+        match = Kernel.instance.searchTop("What do you want to eat\? \[(.*) or \?\*\]")
+        if match:
+            self.eat(match)
+
         if Kernel.instance.searchTop("\? \[(.*?)\]"):
             Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.FramebufferParser.topLine())
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
 
         match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*HD:(\d+)\s*T:(\d+)")
-        if match:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
+        # if match:
+        #     (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
+        #     Kernel.instance.log('hui')
+        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)")
+        match_hanger = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
 
-        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
         if match:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns) = map(int, match.groups())
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.hanger) = map(int, match.groups()[:-1]) + [match.groups()[-1]]
+        elif match_hanger:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns) = map(int, match_hanger.groups())
+        else:
+            Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
 
         match = Kernel.instance.searchBot("(\w+) the \w+.*?St:([^ ]+)\s+Dx:(\d+)\s+Co:(\d+)\s+In:(\d+)\s+Wi:(\d+)\s+Ch:(\d+)\s+(\w+)\s+S:(\d+)")
         if match:
@@ -133,11 +144,11 @@ class Senses(EeekObject):
         Kernel.instance.Hero.isEngulfed = True
 
     def shopkeep_door(self):
-        door = [tile for tile in Kernel.instance.curTile().neighbours() if tile.glyph == '+'][0]
+        door = [tile for tile in Kernel.instance.curTile().neighbours() if tile.is_door][0]
         door.shopkeepDoor = True
 
     def locked_door(self):
-        if Kernel.instance.Hero.lastActionedTile and Kernel.instance.Hero.lastActionedTile.glyph == '+':
+        if Kernel.instance.Hero.lastActionedTile and Kernel.instance.Hero.lastActionedTile.is_door:
             Kernel.instance.Hero.lastActionedTile.locked = True
 
     def found_trap(self, type):
@@ -178,6 +189,23 @@ class Senses(EeekObject):
 
     def call_potion(self, match):
         Kernel.instance.send("\x1b")
+        Kernel.instance.dontUpdate()
+
+    def eat_it(self):
+        Kernel.instance.log('eating...')
+        Kernel.instance.send('y')
+        Kernel.instance.dontUpdate()
+
+    def no_door(self):
+        Kernel.instance.Hero.lastActionedTile.is_door = False
+
+    def eat(self, matched):
+        options = matched.groups()[0]
+        Kernel.instance.log('eating...' + options)
+        if 'f' in options:
+            Kernel.instance.send('f')
+        else:
+            Kernel.instance.send(options[0])
         Kernel.instance.dontUpdate()
 
     def is_weak(self):
@@ -245,6 +273,7 @@ class Senses(EeekObject):
                                 func()
 
         self.messages = []
+
     def dontUpdate(self):
         Kernel.instance.log("Someone told the Senses not to update this tick! Probably myself")
         self.updateNext = False

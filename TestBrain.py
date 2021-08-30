@@ -1,10 +1,12 @@
 from Brain import *
 
+
 class TestBrain(Brain):
     def __init__(self):
         Brain.__init__(self, "TestBrain")
 
         self.actions = [
+                            [Eat(), 5000],
                             [AttackMonster(),   4000],
                             [FixStatus(),       3000],
                             [RestoreHP(),       2500],

@@ -11,6 +11,7 @@ from Actions.SearchSpot import *
 from Actions.FixStatus import *
 from Actions.RestoreHP import *
 from Actions.DipForExcalibur import *
+from Actions.Eat import *
 
 
 class Brain(SignalReceiver):

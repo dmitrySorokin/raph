@@ -34,7 +34,7 @@ class Level:
         return ret
 
     def findDoors(self):
-        return [tile for tile in self.tiles if tile.glyph == '+']
+        return [tile for tile in self.tiles if tile.is_door]
 
     def update(self):
         FBTiles = Kernel.instance.FramebufferParser.mapTiles()

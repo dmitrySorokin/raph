@@ -1,5 +1,6 @@
 from Kernel import *
 
+
 class OpenDoors:
     def __init__(self):
         self.path = None
@@ -12,7 +13,7 @@ class OpenDoors:
                 return True
 
         Kernel.instance.log("Checking for adjacent doors..")
-        doors = Kernel.instance.curTile().adjacent({'glyph': '+'})
+        doors = [neib for neib in Kernel.instance.curTile().neighbours() if neib.is_door]
         for door in doors:
             if Kernel.instance.Hero.canOpen(door):
                 self.goal = door

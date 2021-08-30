@@ -4,11 +4,12 @@ from TermColor import *
 from Kernel    import *
 from Findable  import *
 
+
 class Tile(Findable):
     dngFeatures = ['.', '}', '{', '#', '<', '>', '+', '^', '|', '-', '~', ' ']
     dngItems    = ['`', '0', '*', '$', '_', '[', '%', ')', '(', '/', '?', '!', '"', '=', '+', '\\']
     dngMonsters = map(chr, range(ord('a'), ord('z')+1) + range(ord('A'), ord('Z')+1) + range(ord('1'), ord('5')+1)) + \
-                  ['@', "'", '&', ';', ':', ']']
+                  ['@', "'", '&', ';', ':']
     walkables    = {'.': 1,
                     '}': 1,
                     '{': 1,
@@ -21,32 +22,38 @@ class Tile(Findable):
     def __init__(self, y, x, level):
         Findable.__init__(self)
 
-        self.y        = y
-        self.x        = x
-        self.level    = level
+        self.y = y
+        self.x = x
+        self.level = level
 
-        self.glyph    = None
-        self.color    = TermColor()
+        self.glyph = None
+        self.color = TermColor()
 
         self.explored = False
-        self.items    = []
-        self.monster  = None
+        self.items = []
+        self.monster = None
 
         self.walkable = True
 
         self.searches = 0
         self.searched = False
 
-        self.inShop   = False
+        self.inShop = False
 
-        self.locked        = False
+        self.locked = False
         self.shopkeepDoor = False
+        self.is_door = False
 
     def coords(self):
-        return (self.y, self.x)
+        return self.y, self.x
 
     def setTile(self, glyph, color):
         self.monster = None
+        self.is_door = glyph == '+'
+
+        # fix for mimic monster 
+        glyph = 'm' if glyph == ']' else glyph
+
         if glyph in Tile.dngFeatures:
             self.glyph = glyph
             self.color = color

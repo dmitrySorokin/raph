@@ -19,6 +19,8 @@ class Hero(EeekObject):
         self.isEngulfed = False
         self.isPolymorphed = False
 
+        self.hanger = None
+
         self.lastActionedTile = None # I sersiouly need to #enhance my english skills :'(
 
     def coords(self):
@@ -76,9 +78,13 @@ class Hero(EeekObject):
             if neighbour.searches == Kernel.instance.curLevel().maxSearches:
                 neighbour.searched = True
 
+    def eat(self):
+        Kernel.instance.send("Hero::eat")
+        Kernel.instance.send("e")
+
     def canPickupHeavy(self):
         # for poly and stuff
         return False
 
     def canOpen(self, tile):
-        return not tile.shopkeepDoor and tile.glyph == '+' and (tile.locked or Kernel.instance.Hero.legShape) and tile.isAdjacent(Kernel.instance.curTile())
+        return not tile.shopkeepDoor and tile.is_door and (tile.locked or Kernel.instance.Hero.legShape) and tile.isAdjacent(Kernel.instance.curTile())

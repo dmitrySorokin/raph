@@ -21,8 +21,10 @@ class Kernel:
 
     def searchMap(self, regex):
         return re.search(regex, self.FramebufferParser.mapLines())
+
     def searchBot(self, regex):
         return re.search(regex, self.FramebufferParser.botLines())
+
     def searchTop(self, regex):
         return re.search(regex, self.FramebufferParser.topLine())
 
