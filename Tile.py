@@ -9,8 +9,8 @@ class Tile(Findable):
     dngFeatures = ['.', '}', '{', '#', '<', '>', '+', '^', '|', '-', '~', ' ']
     dngItems    = ['`', '0', '*', '$', '_', '[', '%', ')', '(', '/', '?', '!', '"', '=', '+', '\\']
     dngMonsters = list(map(chr, range(ord('a'), ord('z')+1))) + \
-                       list(range(ord('A'), ord('Z')+1)) + \
-                       list(range(ord('1'), ord('5')+1)) + \
+                  list(map(chr, range(ord('A'), ord('Z')+1))) + \
+                  list(map(chr, range(ord('1'), ord('5')+1))) + \
                         ['@', "'", '&', ';', ':']
     walkables    = {'.': 1,
                     '}': 1,

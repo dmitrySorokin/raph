@@ -18,7 +18,7 @@ class SearchSpot:
             for tile in Kernel.instance.curTile().neighbours():
                 if tile.is_door: # So it won't search on "###@]  "
                     return False
-            self.goal = sorted(unsearched, lambda x,y: x.searches-y.searches)[0]
+            self.goal = sorted(unsearched, key=lambda x: x.searches)[0]
             return True
         return False
 

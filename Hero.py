@@ -1,3 +1,5 @@
+import Kernel
+
 from Kernel import *
 from EeekObject import *
 
@@ -54,7 +56,7 @@ class Hero(EeekObject):
             self.beforeMove = (self.x,self.y)
             self.tmpCount   = 0
 
-            Kernel.instance.NethackSock.s.send(dir)
+            Kernel.instance.send(dir)
 
     def descend(self):
         Kernel.instance.log("Hero is descending..")

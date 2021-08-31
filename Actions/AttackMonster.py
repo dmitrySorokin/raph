@@ -32,7 +32,7 @@ class AttackMonster:
         self.path = None
 
         for monster in monsters:
-            for neighbour in sorted(monster.walkableNeighbours(), cmp=lambda x,y: x.tilesFromCurrent()-y.tilesFromCurrent()):
+            for neighbour in sorted(monster.walkableNeighbours(), key=lambda x: x.tilesFromCurrent()):
                 Kernel.instance.log("Checking path from %s->monster(%s)" % (Kernel.instance.curTile(), neighbour))
                 path = Kernel.instance.Pathing.path(end=neighbour, max_g=self.path and self.path.g or None)
                 if path and (self.path == None or self.path.g > path.g):

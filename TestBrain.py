@@ -7,7 +7,7 @@ class TestBrain(Brain):
 
         self.actions = [
                             [AttackMonster(),   4000],
-                            [Eat(), 3500],
+                            # [Eat(), 3500],
                             [FixStatus(),       3000],
                             [RestoreHP(),       2500],
                             [SearchSpot(),      2000],
@@ -29,4 +29,4 @@ class TestBrain(Brain):
 
     def s_isWeak(self):
         Kernel.instance.log("Praying because I'm weak")
-        Kernel.instance.send("#pray\n")
+        Kernel.instance.send("#pray")

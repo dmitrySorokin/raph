@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import Kernel
 import sys
 
 # from curses import *
@@ -55,14 +56,14 @@ class Eeek:
         Kernel.instance.Personality.setBrain(curBrain) # Default brain
 
     def run(self):
-        obs = self.env.reset()
-        done = False
-        while not done:
+        while not Kernel.instance.done:
+            obs = Kernel.instance.obs
             y, x = obs['tty_cursor']
             self.frame_buffer.parse(self._render(obs['tty_chars']))
             self.frame_buffer.x = x
             self.frame_buffer.y = y
             Kernel.instance.screenParsed()
+        input(Kernel.instance.reward)
 
             # Kernel.instance.sockRecv()
 

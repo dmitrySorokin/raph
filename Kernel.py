@@ -15,9 +15,14 @@ class Kernel:
 
         Kernel.instance = self
         self.env = env
+        self.obs = self.env.reset()
+
         self.action2id = {
             chr(action.value): action_id for action_id, action in enumerate(env._actions)
         }
+
+        self.reward = 0
+        self.done = False
 
     def curLevel(self):
         return self.Dungeon.curBranch.curLevel
@@ -65,9 +70,13 @@ class Kernel:
         self.observers.append(observer)
 
     def send(self, line):
-        self.log("Sent string:" + line + ' ' + str(type(line)))
-        self.log("Sent string:" + line + ' ' + str(self.action2id.get(line)))
-        return self.env.step(self.action2id.get(line))
+        for ch in line:
+            self.log("Sent string:" + ch + ' ' + str(type(ch)))
+            self.log("Sent string:" + ch + ' ' + str(self.action2id.get(ch)))
+            self.obs, rew, self.done, info = self.env.step(self.action2id.get(ch))
+            self.reward += rew
+        Kernel.instance.drawString(f"reward {self.reward}")
+
 
     def sockRecv(self, line):
         self.log('sockRecv ' + line)
