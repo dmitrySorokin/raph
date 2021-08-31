@@ -7,12 +7,17 @@ import random
 
 class Kernel:
     instance = None
-    def __init__(self):
+
+    def __init__(self, env):
         self.signalReceivers = []
         self._file = open("logs/log.txt", "w")
         self.observers = []
 
         Kernel.instance = self
+        self.env = env
+        self.action2id = {
+            chr(action.value): action_id for action_id, action in enumerate(env._actions)
+        }
 
     def curLevel(self):
         return self.Dungeon.curBranch.curLevel
@@ -60,8 +65,9 @@ class Kernel:
         self.observers.append(observer)
 
     def send(self, line):
-        self.log("Sent string:" + line)
-        return self.NethackSock.send(line)
+        self.log("Sent string:" + line + ' ' + str(type(line)))
+        self.log("Sent string:" + line + ' ' + str(self.action2id.get(line)))
+        return self.env.step(self.action2id.get(line))
 
     def sockRecv(self, line):
         self.log('sockRecv ' + line)
@@ -75,7 +81,6 @@ class Kernel:
     def die(self, msg):
         sys.stdout.write("\x1b[35m\x1b[3;1H%s\x1b[m\x1b[25;0f" % msg)
         self.log(msg)
-        self.NethackSock.die()
         exit()
 
     def drawString(self, msg):
@@ -85,12 +90,6 @@ class Kernel:
 
     def addch(self, y, x, char, c=None):
         sys.stdout.write("%s\x1b[%d;%dH%s\x1b[m" % (c and "\x1b[%dm" % c or "", y, x, char))
-
-    def setPause(self, to):
-        self.log("Setting pause to %s" % str(to))
-        self.NethackSock.paused = to
-    def paused(self):
-        return self.NethackSock.paused
 
     def dontUpdate(self):
         self.Dungeon.dontUpdate()

@@ -1,13 +1,13 @@
 #!/usr/bin/python
 import sys
 
-from curses import *
+# from curses import *
 
 from myconstants import *
-from NethackSock import *
+# from NethackSock import *
 from FramebufferParser import *
-from SocketLogger import *
-from DGLParser import *
+# from SocketLogger import *
+# from DGLParser import *
 from Personality import *
 from Senses import *
 from Console import *
@@ -26,7 +26,9 @@ import nle
 class Eeek:
     def __init__(self):
         # Initialize the Kernel
-        Kernel()
+        self.env = gym.make("NetHackChallenge-v0", savedir='replays')
+
+        Kernel(self.env)
 
         # Socket observers
         # SocketLogger() # This should be before other stuff for easier debugging
@@ -53,8 +55,7 @@ class Eeek:
         Kernel.instance.Personality.setBrain(curBrain) # Default brain
 
     def run(self):
-        env = gym.make("NetHackChallenge-v0", savedir='replays')
-        obs = env.reset()
+        obs = self.env.reset()
         done = False
         while not done:
             y, x = obs['tty_cursor']
