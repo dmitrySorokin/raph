@@ -85,7 +85,7 @@ class Tile(Findable):
                 self.walkable = True
             #Kernel.instance.log("Found item: %s, Color: %s, at (%d,%d). Tile is now: %s" % (str(it), str(color), self.y, self.x, str(self)))
 
-        elif self.coords() == Kernel.instance.Hero.coords():
+        elif self.coords() == Kernel.instance.curTile().coords():
             self.explored = True
             self.walkable = True
 
@@ -148,14 +148,14 @@ class Tile(Findable):
                 return True
         return False
 
-    def straight(self, find):
+    def straight(self, find=None):
         ret = []
-        for x in range(-1,2):
-            for y in range(-1,2):
-                if x*y == 0 and x!=y:
-                    tile = self.level.tiles[(x+self.x) + (y+self.y)*WIDTH]
-                    if tile.find(find):
-                        ret.append(tile)
+        for x, y in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            if x + self.x < 0 or x + self.x >= DUNGEON_WIDTH or y + self.y < 0 or y + self.y >= DUNGEON_HEIGHT:
+                continue
+            tile = self.level.tiles[(x + self.x) + (y + self.y) * WIDTH]
+            if find is None or tile.find(find):
+                ret.append(tile)
         return ret
 
     def adjacent(self, find):
@@ -172,7 +172,7 @@ class Tile(Findable):
         return ret
 
     def isHero(self):
-        return self.coords() == Kernel.instance.Hero.coords()
+        return self.coords() == Kernel.instance.curTile().coords()
 
     def tilesFromCurrent(self):
         return (abs(Kernel.instance.Hero.x-self.x) + abs(Kernel.instance.Hero.y-self.y))

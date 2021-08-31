@@ -8,6 +8,7 @@ class Monster:
         ['@', COLOR_GREEN],       # watch captain I think
         ['e', COLOR_BLUE],        # floating eye I think
     ]
+
     def __init__(self, glyph, color):
         self.glyph = glyph
         self.color = color
@@ -21,15 +22,15 @@ class Monster:
             self.name = "mimic"
             return
 
-        ret = Kernel.instance.MonsterSpoiler.fromGlyphColor(glyph, color.getId())
+        # ret = Kernel.instance.MonsterSpoiler.fromGlyphColor(glyph, color.getId())
 
-        if len(ret) == 1:
-            (self.name, self.spoiler) = ret[0]
-            Kernel.instance.log("Got %s" % str([self.name, self.spoiler]))
-        elif len(ret) > 1:
-            Kernel.instance.log("Got several monsters with g:%s c:%s (%s)" % (glyph, str(color), str(ret)))
-        elif glyph != 'I':
-            Kernel.instance.die("Could not find monster with g:%s c:%s" % (glyph, str(color)))
+        # if len(ret) == 1:
+        #     (self.name, self.spoiler) = ret[0]
+        #     Kernel.instance.log("Got %s" % str([self.name, self.spoiler]))
+        # elif len(ret) > 1:
+        #     Kernel.instance.log("Got several monsters with g:%s c:%s (%s)" % (glyph, str(color), str(ret)))
+        # elif glyph != 'I':
+        #     Kernel.instance.die("Could not find monster with g:%s c:%s" % (glyph, str(color)))
 
     def isAttackable(self):
         for peaceful in Monster.peacefuls:

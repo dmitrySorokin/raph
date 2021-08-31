@@ -37,11 +37,11 @@ class Senses(EeekObject):
             "You get expelled":                                              ['got_expelled'],
             "You return to (human|) form":                                   ['no_poly'],
             "There is a teleportation trap here":                            ['found_trap', 'teleport'],
-            r".* eat it\? \[ynq\] \(n\)":              ['eat_it'],
+            # r".* eat it\? \[ynq\] \(n\)":              ['eat_it'],
             "You see no door there.": ['no_door'],
-            "You don't have anything to eat.": ['no_food']
+            "You finish eating .*": ['food_is_eaten'],
+            "You don't have anything to eat.": ['food_is_eaten'],
         }
-
 
     def update(self):
         if Kernel.instance.Hero.isEngulfed and Kernel.instance.searchTop("You destroy the (.+)"):
@@ -102,9 +102,12 @@ class Senses(EeekObject):
             Kernel.instance.send("\x1b")
             Kernel.instance.dontUpdate()
 
-        match = Kernel.instance.searchTop("What do you want to eat\? \[(.*) or \?\*\]")
+        match = Kernel.instance.searchTop(r"What do you want to eat\? \[(.*) or \?\*\]")
+        match2 = Kernel.instance.searchTop(r".* eat it\? \[ynq\] \(n\)")
         if match:
             self.eat(match)
+        elif match2:
+            self.eat_it()
         elif Kernel.instance.searchTop("\? \[(.*?)\]"):
             Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.FramebufferParser.topLine())
             Kernel.instance.send(" ")
@@ -115,12 +118,15 @@ class Senses(EeekObject):
         #     (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
         #     Kernel.instance.log('hui')
         match_status = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)")
+        match_status2 = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)\s([a-zA-Z]+)")
         match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
 
         if match_status:
             (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match_status.groups()[:-1]) + [match_status.groups()[-1]]
         elif match:
             (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match.groups()) + [None]
+        elif match_status2:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status, _) = map(int, match_status.groups()[:-2]) + [match_status.groups()[-2:]]
         else:
             Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
 
@@ -228,13 +234,15 @@ class Senses(EeekObject):
         Kernel.instance.log("Leg is fine again.")
         Kernel.instance.Hero.legShape = True
 
-    def found_items(self, tmp):
+    def found_items(self, tmp, msg):
         Kernel.instance.log("Found some item(s)..")
         Kernel.instance.sendSignal("foundItemOnFloor")
         if Kernel.instance.Dungeon.curBranch:
             Kernel.instance.log("Updating items on (%s)" % Kernel.instance.curTile())
             for item in Kernel.instance.curTile().items:
                 item.appearance = "Dummy"
+                if 'corpse' in msg:
+                    item.appearance = 'corpse'
 
     def shop_entrance(self):
         Kernel.instance.log("Found a shop.")
@@ -248,9 +256,8 @@ class Senses(EeekObject):
                     Kernel.instance.log("Setting %s to be inside a shop." % tile)
                     tile.inShop = True
 
-    def no_food(self):
-        Kernel.instance.Hero.have_food = False
-
+    def food_is_eaten(self):
+        Kernel.instance.curTile().items = []
 
     def graffiti_on_floor(self):
         Kernel.instance.log("Found grafitti!")
@@ -269,7 +276,9 @@ class Senses(EeekObject):
                         if member[0] == self.events[event][0]:
                             Kernel.instance.log("Calling method (%s)" % event)
                             func = member[1]
-                            if len(inspect.getargspec(func)[0]) > 1:
+                            if len(inspect.getargspec(func)[0]) > 2:
+                                func(match, msg)
+                            elif len(inspect.getargspec(func)[0]) > 1:
                                 func(match)
                             else:
                                 func()

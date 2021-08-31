@@ -1,1 +1,0 @@
-PYTHONPATH=".:Actions" python2.5 nh.py

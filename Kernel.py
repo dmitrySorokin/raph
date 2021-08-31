@@ -16,6 +16,7 @@ class Kernel:
 
     def curLevel(self):
         return self.Dungeon.curBranch.curLevel
+
     def curTile(self):
         return self.Dungeon.curBranch.curLevel.tiles[Kernel.instance.Hero.x + Kernel.instance.Hero.y*WIDTH]
 
@@ -48,6 +49,7 @@ class Kernel:
 
     def addSignalReceiver(self, sr):
         self.signalReceivers.append(sr)
+
     def sendSignal(self, s, *args, **args2):
         self.log("Sending signal " + s)
         for sr in self.signalReceivers:

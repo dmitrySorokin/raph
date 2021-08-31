@@ -1,6 +1,7 @@
 from Kernel import *
 import time
 
+
 class Search:
     def __init__(self):
         self.path    = None
@@ -9,6 +10,7 @@ class Search:
         self.search  = False
 
     def can(self):
+        # FIXME: INFINITE RECURSION HERE
         if self.goal and self.goal.searched:
             Kernel.instance.log("Searched enough here. Let's move on")
             self.walkto = None

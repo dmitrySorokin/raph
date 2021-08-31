@@ -14,7 +14,7 @@ class Level:
         self.maxSearches = 10
 
         for y in range(0, 21):
-            for x in range(0,80):
+            for x in range(0, 80):
                 self.tiles.append(Tile(y, x, self))
 
         Kernel.instance.log("Made a Level() with dlvl: %d in branch %s" % (self.dlvl, self.branchname))
@@ -35,6 +35,9 @@ class Level:
 
     def findDoors(self):
         return [tile for tile in self.tiles if tile.is_door]
+
+    def find_food(self):
+        return [tile for tile in self.tiles for item in tile.items if item.is_food()]
 
     def update(self):
         FBTiles = Kernel.instance.FramebufferParser.mapTiles()

@@ -25,7 +25,7 @@ class Hero(EeekObject):
         self.lastActionedTile = None # I sersiouly need to #enhance my english skills :'(
 
     def coords(self):
-        return (self.y, self.x)
+        return self.y, self.x
 
     def attack(self, tile):
         dir = Kernel.instance.Pathing.getDirection(tile)
@@ -82,6 +82,9 @@ class Hero(EeekObject):
     def eat(self):
         Kernel.instance.log("Hero::eat")
         Kernel.instance.send("e")
+
+    def can_eat(self, tile):
+        return len([item for item in tile.items if item.is_food()]) > 0
 
     def canPickupHeavy(self):
         # for poly and stuff

@@ -9,7 +9,7 @@ class Item(Findable):
     def __init__(self, name, glyph, color, heavy=False):
         Findable.__init__(self)
 
-        self.appearance = name
+        self.name = name
         self.qty        = 1
         self.enchants   = 0
         self.buc        = Item.UNKNOWNBUC
@@ -22,7 +22,7 @@ class Item(Findable):
         self.heavy      = heavy or self.glyph in ['0']
 
     def __str__(self):
-        return "?:%s, g:%s, c:%s" % tuple(map(str, (self.appearance, self.glyph, self.color)))
+        return "?:%s, g:%s, c:%s" % tuple(map(str, (self.name, self.glyph, self.color)))
 
     def isHeavy(self):
         return self.glyph in ['`', '0']
@@ -31,4 +31,7 @@ class Item(Findable):
         return self.glyph not in ['_', '\\']
 
     def identified(self, id):
-        self.appearance = id
+        self.name = id
+
+    def is_food(self):
+        return self.glyph == '%' and self.name != 'corpse'

@@ -6,13 +6,13 @@ class TestBrain(Brain):
         Brain.__init__(self, "TestBrain")
 
         self.actions = [
-                            [Eat(), 5000],
                             [AttackMonster(),   4000],
+                            [Eat(), 3500],
                             [FixStatus(),       3000],
                             [RestoreHP(),       2500],
                             [SearchSpot(),      2000],
                             [OpenDoors(),       1750],
-                            [DipForExcalibur(), 1600],
+                            # [DipForExcalibur(), 1600],
                             [GetPhatz(),        1500],
                             [Explore(),         1000],
                             [Descend(),          500],

@@ -7,3 +7,8 @@ Tile().canMoveDiagonally instead of "is door and tile.x!=blahlbah"
 Make him be aware of which monsters that are guaranteed to be hostile, and make him wait instead of approach the mob
 Make a HealSelf(), perhaps cooperating with a Retreat()
 Make .can() return the number of moves needed untill it's action can start performing so we can pick up stuff on the way to kicking a door
+
+DIMA
+1. diagonal moves (!)
+2. fix bugs
+
