@@ -10,7 +10,7 @@ class Search:
         self.walkto = None
         self.goal = None
         self.search = False
-        self._reset_walktos = []
+        # self._reset_walktos = []
 
     def can(self):
         # FIXME: INFINITE RECURSION HERE
@@ -33,7 +33,7 @@ class Search:
                     if tile.glyph not in ['|', '-', ' ']:
                         continue
                     neighbours = tile.adjacent({'explored': True, 'walkable': True, 'monster': None})
-                    neighbours = [neib for neib in neighbours if neib not in self._reset_walktos] # (dima)
+                    # neighbours = [neib for neib in neighbours if neib not in self._reset_walktos] # (dima)
                     if neighbours:
                         if (best and tile.tilesFromCurrent() < best[2]) or not best:
                             best = (tile, neighbours, neighbours[0].tilesFromCurrent())
@@ -52,19 +52,19 @@ class Search:
             if self.goal and self.goal.isAdjacent(Kernel.instance.curTile()) and self.goal.searches < Kernel.instance.curLevel().maxSearches:
                 Kernel.instance.log("Searching tile (%s)" % str(self.walkto))
                 self.search = True
-                self.reset_walktos()
+                # self.reset_walktos()
                 return True
 
 
         if not self.walkto:
-            self.reset_walktos()
+            # self.reset_walktos()
             return False
 
 
         if self.walkto == Kernel.instance.curTile():
             Kernel.instance.log("Searching tile (%s)" % str(self.walkto))
             self.search = True
-            self.reset_walktos()
+            # self.reset_walktos()
             return True
 
         elif self.walkto:
@@ -72,7 +72,7 @@ class Search:
             self.path = Kernel.instance.Pathing.path(end=self.walkto)
             if self.path:
                 Kernel.instance.log("Found a path.")
-                self.reset_walktos()
+                # self.reset_walktos()
                 return True
             else:
                 Kernel.instance.log("Recursing Search.can()..")
@@ -81,14 +81,14 @@ class Search:
                 ))
 
                 # FIXME: (dima) hack to prevent infinite recursion. Should be undone
-                self._reset_walktos.append(self.walkto)
+                # self._reset_walktos.append(self.walkto)
 
                 self.walkto = None
                 self.goal = None
                 self.path = None
                 return self.can()
         Kernel.instance.curLevel().maxSearches = Kernel.instance.curLevel().maxSearches + 5
-        self.reset_walktos()
+        # self.reset_walktos()
         return False
 
     def execute(self):
@@ -105,5 +105,5 @@ class Search:
             Kernel.instance.Hero.move(myPath.tile)
             Kernel.instance.sendSignal('interrupt_action', self)
 
-    def reset_walktos(self):
-        self._reset_walktos = []
+    # def reset_walktos(self):
+    #     self._reset_walktos = []
