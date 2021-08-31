@@ -1,3 +1,4 @@
+import Kernel
 import inspect
 
 from Kernel import *
@@ -103,11 +104,11 @@ class Senses(EeekObject):
             Kernel.instance.dontUpdate()
 
         match = Kernel.instance.searchTop(r"What do you want to eat\? \[(.*) or \?\*\]")
-        match2 = Kernel.instance.searchTop(r".* eat it\? \[ynq\] \(n\)")
+        match2 = Kernel.instance.searchTop(r".* eat .*\? \[ynq\] \(n\)")
         if match:
             self.eat(match)
         elif match2:
-            self.eat_it()
+            self.eat_it(Kernel.instance.FramebufferParser.topLine())
         elif Kernel.instance.searchTop("\? \[(.*?)\]"):
             Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.FramebufferParser.topLine())
             Kernel.instance.send(" ")
@@ -197,9 +198,16 @@ class Senses(EeekObject):
         Kernel.instance.send("\x1b")
         Kernel.instance.dontUpdate()
 
-    def eat_it(self):
-        Kernel.instance.log('eating...')
-        Kernel.instance.send('y')
+    def eat_it(self, msg):
+        if 'corpse' in msg:
+            Kernel.instance.log('corpse: eating aborted')
+            Kernel.instance.send('n')
+            for item in Kernel.instance.curTile().items:
+                if item.glyph == '%':
+                    item.appearance = 'corpse'
+        else:
+            Kernel.instance.log('eating...')
+            Kernel.instance.send('y')
         Kernel.instance.dontUpdate()
 
     def no_door(self):

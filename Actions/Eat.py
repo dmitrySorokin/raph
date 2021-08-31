@@ -16,6 +16,9 @@ class Eat():
         self.path = None
         self.adj = None
 
+        if Kernel.instance.Hero.hanger == 'Satiated':
+            return False
+
         # if Kernel.instance.Hero.hanger not in ['Hungry', 'Weak', 'Fainting']:
         #     return False
 
