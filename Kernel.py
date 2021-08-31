@@ -28,7 +28,6 @@ class Kernel:
         return self.Dungeon.curBranch.curLevel
 
     def curTile(self):
-        Kernel.instance.log(f'total: {self.Dungeon.curBranch.curLevel.tiles.__len__()}, {Kernel.instance.Hero.x} + {Kernel.instance.Hero.y}*{WIDTH}')
         return self.Dungeon.curBranch.curLevel.tiles[Kernel.instance.Hero.x + Kernel.instance.Hero.y*WIDTH]
 
     def searchMap(self, regex):

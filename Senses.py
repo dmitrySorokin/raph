@@ -42,6 +42,8 @@ class Senses(EeekObject):
             "You see no door there.": ['no_door'],
             "You finish eating .*": ['food_is_eaten'],
             "You don't have anything to eat.": ['food_is_eaten'],
+            "You harmlessly attack a statue.": ['is_statue'],
+            "You cannot pass through the bars.": ['is_bar']
         }
 
     def update(self):
@@ -290,6 +292,15 @@ class Senses(EeekObject):
 
     def food_is_eaten(self):
         Kernel.instance.curTile().items = []
+
+    def is_statue(self):
+        Kernel.instance.log(str(Kernel.instance.Hero.lastActionedTile))
+        Kernel.instance.Hero.lastActionedTile.monster.is_statue = True
+        Kernel.instance.log(str( Kernel.instance.Hero.lastActionedTile))
+
+    def is_bar(self):
+        Kernel.instance.Hero.lastActionedTile.walkable = False
+
 
     def graffiti_on_floor(self):
         Kernel.instance.log("Found grafitti!")

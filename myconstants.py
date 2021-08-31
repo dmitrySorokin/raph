@@ -1,22 +1,3 @@
-from curses import *
-
-# Interface modes
-MODE_USERPLAY = 0
-MODE_COMMANDS = 1
-MODE_CONSOLE  = 2
-MODE_CURSOR   = 3
-
-# Should be moved somewhere
-CURSES = True
-if CURSES:
-    stdscr = initscr()
-
-HOST = "nethack.alt.org"
-PORT = 23
-
-HOST = "nethack.fribyte.uib.no"
-PORT = 23
-
 WIDTH  = 80
 HEIGHT = 24
 
@@ -72,4 +53,3 @@ directions = {  'y': [-1, -1],
                 'b': [ 1, -1],
                 'n': [ 1,  1]
                 }
-

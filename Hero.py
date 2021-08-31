@@ -33,6 +33,7 @@ class Hero(EeekObject):
         dir = Kernel.instance.Pathing.getDirection(tile)
         Kernel.instance.drawString("Attacking -> %s (%s)" % (dir, tile))
         Kernel.instance.send("F"+dir)
+        self.lastActionedTile = tile
 
     def move(self, tile):
         if self.beforeMove == (self.x,self.y) and self.tmpCount < 5 and not (self.inBearTrap or self.inPit):
@@ -56,6 +57,7 @@ class Hero(EeekObject):
             self.beforeMove = (self.x,self.y)
             self.tmpCount   = 0
 
+            self.lastActionedTile = tile
             Kernel.instance.send(dir)
 
     def descend(self):

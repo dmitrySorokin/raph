@@ -11,4 +11,7 @@ Make .can() return the number of moves needed untill it's action can start perfo
 DIMA
 1. diagonal moves (!)
 2. fix bugs
+3. make it eat
+4. status and msg from nle, not from tty
+5. You are carrying too much to get through.                                       
 

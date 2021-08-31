@@ -13,6 +13,7 @@ class Monster:
         self.glyph = glyph
         self.color = color
         self.name = "unknown"
+        self.is_statue = False
         self.spoiler = {}
 
         # Exceptions
@@ -33,6 +34,9 @@ class Monster:
         #     Kernel.instance.die("Could not find monster with g:%s c:%s" % (glyph, str(color)))
 
     def isAttackable(self):
+        if self.is_statue:
+            return False
+
         for peaceful in Monster.peacefuls:
             if self.glyph == peaceful[0] and self.color.getId() == peaceful[1]:
                 Kernel.instance.log("%s is not attacakble." % self)

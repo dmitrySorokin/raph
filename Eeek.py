@@ -54,6 +54,7 @@ class Eeek:
         Kernel.instance.Personality.setBrain(curBrain) # Default brain
 
     def run(self):
+        sys.stdout.write("\u001b[2J\u001b[0;0H")
         while not Kernel.instance.done:
             obs = Kernel.instance.obs
             y, x = obs['tty_cursor']
@@ -61,4 +62,5 @@ class Eeek:
             self.frame_buffer.x = x
             self.frame_buffer.y = y
             Kernel.instance.screenParsed()
-        input(Kernel.instance.reward)
+        input(f'GAME OVER: {Kernel.instance.reward}')
+
