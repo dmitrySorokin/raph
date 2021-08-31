@@ -122,12 +122,21 @@ class Senses(EeekObject):
         match_status2 = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)\s([a-zA-Z]+)")
         match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
 
-        if match_status:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match_status.groups()[:-1]) + [match_status.groups()[-1]]
+        if match_status2:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp,
+            Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp,
+            Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status, _) = list(map(
+                int, match_status2.groups()[:-2])) + list(match_status2.groups()[-2:])
+        elif match_status:
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
+             Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
+             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns,
+             Kernel.instance.Hero.status) = list(map(int, match_status.groups()[:-1])) + list(match_status.groups()[-1:])
         elif match:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status) = map(int, match.groups()) + [None]
-        elif match_status2:
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status, _) = map(int, match_status.groups()[:-2]) + [match_status.groups()[-2:]]
+            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
+             Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
+             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns,
+             Kernel.instance.Hero.status) = list(map(int, match.groups())) + [None]
         else:
             Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
 
@@ -199,6 +208,11 @@ class Senses(EeekObject):
         Kernel.instance.dontUpdate()
 
     def eat_it(self, msg):
+        # FIXME: (dima) should be in Eat.py
+        if Kernel.instance.Hero.hanger == 'Satiated':
+            Kernel.instance.send('n')
+            return
+
         if 'corpse' in msg:
             Kernel.instance.log('corpse: eating aborted')
             Kernel.instance.send('n')
@@ -208,12 +222,17 @@ class Senses(EeekObject):
         else:
             Kernel.instance.log('eating...')
             Kernel.instance.send('y')
-        Kernel.instance.dontUpdate()
+        # Kernel.instance.dontUpdate()
 
     def no_door(self):
         Kernel.instance.Hero.lastActionedTile.is_door = False
 
     def eat(self, matched):
+        # FIXME: (dima) should be in Eat.py
+        if Kernel.instance.Hero.hanger == 'Satiated':
+            Kernel.instance.send(' ')
+            return
+
         options = matched.groups()[0]
         Kernel.instance.log('eating...' + options)
         if 'f' in options:

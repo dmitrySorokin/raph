@@ -25,7 +25,7 @@ class Eat():
         # if Kernel.instance.Hero.have_food:
         #     return True
 
-        Kernel.instance.log("Checking for adjacent food..")
+        Kernel.instance.log("Checking for adjacent food.." + str(Kernel.instance.Hero.hanger))
 
         if Kernel.instance.Hero.can_eat(Kernel.instance.curTile()):
             self.in_position = True
@@ -52,15 +52,15 @@ class Eat():
     def execute(self):
         if self.in_position:
             Kernel.instance.Hero.eat()
-            # Kernel.instance.sendSignal("interrupt_action", self)
+            Kernel.instance.sendSignal("interrupt_action", self)
         elif self.adj:
             Kernel.instance.Hero.move(self.adj)
             Kernel.instance.log('adj ' + str(self.adj))
             Kernel.instance.log('adj ' + str(Kernel.instance.curTile()))
             Kernel.instance.log(self.adj.isWalkable())
-            # Kernel.instance.sendSignal("interrupt_action", self)
+            Kernel.instance.sendSignal("interrupt_action", self)
         else:
             Kernel.instance.log(self.path)
             Kernel.instance.Hero.move(self.path[-2].tile)
-            # Kernel.instance.sendSignal("interrupt_action", self)
+            Kernel.instance.sendSignal("interrupt_action", self)
 
