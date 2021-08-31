@@ -21,7 +21,7 @@ class TestBrain(Brain):
                        ]
 
     def executeNext(self):
-        for action in [x[0] for x in sorted(self.actions, cmp=lambda x,y:y[1]-x[1])]:
+        for action in [x[0] for x in sorted(self.actions, key=lambda x:-x[1])]:
             Kernel.instance.log("### TestBrain -> "+str(action))
             if action.can():
                 action.execute()

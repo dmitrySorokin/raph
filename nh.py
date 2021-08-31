@@ -1,9 +1,6 @@
-#!/usr/bin/python2
+#!/usr/local/bin/python3
 from Eeek import *
 from myconstants import *
 
 eeek = Eeek()
-
-eeek.connect(HOST, PORT)
-
 eeek.run()

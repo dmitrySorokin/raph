@@ -34,9 +34,13 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
         self.state = ""
         self.y = 0
         self.x = 0
+
+        self.herox = 0
+        self.heroy = 0
+
         self.color = TermColor()
 
-        self._file = open("logs/frames.txt", "wa")
+        self._file = open("logs/frames.txt", "w")
         self.firstParse = True
         self.last = ""
 
@@ -111,13 +115,12 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
         self._file.flush()
 
     def parse(self, line):
-        self.last  = line
+        self.x, self.y = 0, 0
+
+
+        self.last = line
 
         self.state = ""
-        if not self.gameStarted:
-            sys.stdout.write(line)
-            sys.stdout.flush()
-            return
 
         for char in line:
             self.state = self.state + char
@@ -199,12 +202,8 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
                     cur = self.screen[x+y*WIDTH]
                     sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
             sys.stdout.flush()
-        else:
-            sys.stdout.write(line)
-            sys.stdout.flush()
 
         self.logScreen()
-        Kernel.instance.screenParsed()
 
     def logScreen(self):
         for y in range(0, HEIGHT):
@@ -217,11 +216,3 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
             self._file.write(str(Kernel.instance.curTile().coords()))
             self._file.write("\n"+str(self.y)+","+str(self.x))
         self._file.flush()
-
-    def game_start(self):
-        Kernel.instance.log("Got game_start signal in FrameBufferParser")
-
-        Kernel.instance.NethackSock.s.recv(99999)
-        Kernel.instance.NethackSock.s.send("\x12")
-
-        self.gameStarted = True

@@ -48,7 +48,7 @@ class Senses(EeekObject):
         if Kernel.instance.Hero.isEngulfed and Kernel.instance.searchTop("You destroy the (.+)"):
             self.no_poly()
 
-        if Kernel.instance.searchTop("You die") >= 0:
+        if Kernel.instance.searchTop("You die"):
             Kernel.instance.die("You died :(")
 
         if Kernel.instance.searchBot("the Werejackal"):
@@ -118,27 +118,29 @@ class Senses(EeekObject):
         # if match:
         #     (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
         #     Kernel.instance.log('hui')
-        match_status = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)")
-        match_status2 = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)\s([a-zA-Z]+)\s([a-zA-Z]+)")
-        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*T:(\d+)")
+        match_status = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*([a-zA-Z]+)")
+        match_status2 = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*([a-zA-Z]+)\s([a-zA-Z]+)")
+        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)")
 
         if match_status2:
             (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp,
             Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp,
-            Kernel.instance.Hero.xp_next, Kernel.instance.turns, Kernel.instance.Hero.status, _) = list(map(
+            Kernel.instance.Hero.xp_next, Kernel.instance.Hero.status, _) = list(map(
                 int, match_status2.groups()[:-2])) + list(match_status2.groups()[-2:])
         elif match_status:
             (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
              Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
-             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns,
-             Kernel.instance.Hero.status) = list(map(int, match_status.groups()[:-1])) + list(match_status.groups()[-1:])
+             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next,
+             Kernel.instance.Hero.status) = list(map(int, match_status.groups()[:-1])) + list(match_status.groups()[-1])
         elif match:
             (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
              Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
-             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns,
+             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next,
              Kernel.instance.Hero.status) = list(map(int, match.groups())) + [None]
         else:
             Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
+
+        Kernel.instance.turns = 1
 
         match = Kernel.instance.searchBot("(\w+) the \w+.*?St:([^ ]+)\s+Dx:(\d+)\s+Co:(\d+)\s+In:(\d+)\s+Wi:(\d+)\s+Ch:(\d+)\s+(\w+)\s+S:(\d+)")
         if match:

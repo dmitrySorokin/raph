@@ -1,4 +1,6 @@
 *.pyc
 .idea
 logs
+replays
+nle_data
 
