@@ -55,6 +55,7 @@ class Tile(Findable):
 
         # fix for mimic monster
         glyph = 'm' if glyph == ']' else glyph
+        glyph = '0' if glyph == '`' else glyph # make boulder notisable
 
         if glyph in Tile.dngFeatures:
             self.glyph = glyph

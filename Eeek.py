@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import Kernel
 import sys
 
@@ -28,7 +27,6 @@ class Eeek:
     def __init__(self):
         # Initialize the Kernel
         self.env = gym.make("NetHackChallenge-v0", savedir='replays')
-
         Kernel(self.env)
 
         # Socket observers
@@ -59,21 +57,8 @@ class Eeek:
         while not Kernel.instance.done:
             obs = Kernel.instance.obs
             y, x = obs['tty_cursor']
-            self.frame_buffer.parse(self._render(obs['tty_chars']))
+            self.frame_buffer.parse(obs['tty_chars'], obs['tty_colors'])
             self.frame_buffer.x = x
             self.frame_buffer.y = y
             Kernel.instance.screenParsed()
         input(Kernel.instance.reward)
-
-            # Kernel.instance.sockRecv()
-
-    def _render(env, obs):
-        result = ''
-        i = 0
-        for row in obs:
-            for ch in row:
-                result += chr(ch)
-            i += 1
-            # result += '\n'
-        return result
-

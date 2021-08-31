@@ -29,4 +29,4 @@ class TestBrain(Brain):
 
     def s_isWeak(self):
         Kernel.instance.log("Praying because I'm weak")
-        Kernel.instance.send("#pray")
+        Kernel.instance.send("#pray\r")

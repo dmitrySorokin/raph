@@ -1,3 +1,4 @@
+import Kernel
 import sys
 import time
 import re
@@ -42,7 +43,6 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
 
         self._file = open("logs/frames.txt", "w")
         self.firstParse = True
-        self.last = ""
 
         for x in range(0, WIDTH*HEIGHT):
             self.screen.append(FBTile())
@@ -114,94 +114,33 @@ class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
         self._file.write(line+"\n")
         self._file.flush()
 
-    def parse(self, line):
+    def parse(self, chars, colors):
         self.x, self.y = 0, 0
-
-
-        self.last = line
 
         self.state = ""
 
-        for char in line:
-            self.state = self.state + char
-            if self.state in self.ansi:
-                action = self.ansi[self.state]
-                if action == "print":
-                    self.printChar(char)
-                elif action == "reset color":
-                    self.color = TermColor()
-                elif action == 'CR':
-                    self.x = 0
-                elif action == 'backspace':
-                    self.x = self.x - 1
-                elif action in ('LF', "down"):
-                    self.y = self.y + 1
-                elif action == "up":
-                    self.y = self.y - 1
-                elif action == "left":
-                    self.x = self.x - 1
-                elif action == "right":
-                    self.x = self.x + 1
-                elif action == 'ignore':
-                    pass
-                elif action == "home":
-                    self.x = 0
-                    self.y = 0
-                elif action == "clear to end of screen":
-                    for i in range(self.x + self.y * WIDTH, WIDTH * HEIGHT):
-                        self.screen[i].set(' ', TermColor())
-                elif action == "clear to end of line":
-                    for i in range(self.x + self.y * WIDTH, WIDTH * (self.y + 1)):
-                        self.screen[i].set(' ', TermColor())
-                elif action == "clear to beginning":
-                    for i in range(self.x + self.y * WIDTH, 0, -1):
-                        self.screen[i].set(' ', TermColor())
-                elif action == "clear screen":
-                    for i in range(0, HEIGHT*WIDTH):
-                        self.screen[i].set(' ', TermColor())
-                elif action == "bold":
-                    self.color.bold = True
-                elif action == "reverse":
-                    self.color.reverse = True
+        for char, color in zip(chars.reshape(-1), colors.reshape(-1)):
+            char = chr(char)
 
-                self.state = ""
-                if self.x >= WIDTH:
-                    self.x = 0
-                    self.y = self.y + 1
-                if self.y >= HEIGHT:
-                    self.y = HEIGHT - 1
-                continue
+            TTY_BRIGHT = 8
 
-            match = re.match("\x1b\[(\d+);(\d+)H", self.state)
-            if match:
-                self.y = int(match.group(1)) - 1
-                self.x = int(match.group(2)) - 1
-                self.state = ""
-                continue
+            is_bold = bool(color & TTY_BRIGHT)
+            color = 30 + int(color & ~TTY_BRIGHT)
 
-            if len(self.state)>10:
-                Kernel.instance.log("Couldn't parse ANSI: %s\nBuffer was: %s" % (line, self.state))
-                Kernel.instance.die("Couldn't parse ANSI")
-                return
+            self.color = TermColor(color)
+            self.color.bold = is_bold
+            self.printChar(char)
+            if self.x >= WIDTH:
+                self.x = 0
+                self.y = self.y + 1
+            if self.y >= HEIGHT:
+                self.y = HEIGHT - 1
 
-            match = re.match("\x1b\[(\d+)m", self.state)
-            if match:
-                col = int(match.group(1))
-                if col>=30 and col<=37:
-                    self.color.fg = col
-                elif col>=40 and col<=47:
-                    self.color.bg = col
-                else:
-                    Kernel.instance.die("Invalid color: %d" % col)
-                self.state = ""
-                continue
-
-        if True:
-            for y in range(0, HEIGHT):
-                for x in range(0, WIDTH):
-                    cur = self.screen[x+y*WIDTH]
-                    sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
-            sys.stdout.flush()
+        for y in range(0, HEIGHT):
+            for x in range(0, WIDTH):
+                cur = self.screen[x+y*WIDTH]
+                sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
+        sys.stdout.flush()
 
         self.logScreen()
 
