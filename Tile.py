@@ -1,7 +1,7 @@
 from Item      import *
 from Monster   import *
 from TermColor import *
-from Kernel    import *
+from Kernel    import Kernel
 from Findable  import *
 
 

@@ -1,13 +1,5 @@
-import Kernel
 import sys
-import time
-import re
-from Tile import *
-from SignalReceiver import *
-from Kernel import *
-from EeekObject import *
 from TermColor import *
-
 from myconstants import *
 
 
@@ -22,10 +14,8 @@ class FBTile:
         self.color = color
 
 
-class FramebufferParser(SignalReceiver, EeekObject):
+class FramebufferParser:
     def __init__(self):
-        EeekObject.__init__(self)
-        SignalReceiver.__init__(self)
 
         self.gameStarted = False
         self.screen = []
@@ -39,7 +29,6 @@ class FramebufferParser(SignalReceiver, EeekObject):
 
         self.color = TermColor()
 
-        self._file = open("logs/frames.txt", "w")
         self.firstParse = True
 
         for x in range(0, WIDTH*HEIGHT):
@@ -108,10 +97,6 @@ class FramebufferParser(SignalReceiver, EeekObject):
         cur.set(char, self.color.copy())
         self.x = self.x+1
 
-    def log(self, line):
-        self._file.write(line+"\n")
-        self._file.flush()
-
     def parse(self, chars, colors):
         self.x, self.y = 0, 0
 
@@ -139,17 +124,3 @@ class FramebufferParser(SignalReceiver, EeekObject):
                 cur = self.screen[x+y*WIDTH]
                 sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
         sys.stdout.flush()
-
-        self.logScreen()
-
-    def logScreen(self):
-        for y in range(0, HEIGHT):
-            self._file.write("\n")
-            for x in range(0, WIDTH):
-                if y == HEIGHT-1 and x > WIDTH-5:
-                    break
-                self._file.write(self.screen[x+y*WIDTH].char)
-        if Kernel.instance.Dungeon.curBranch:
-            self._file.write(str(Kernel.instance.curTile().coords()))
-            self._file.write("\n"+str(self.y)+","+str(self.x))
-        self._file.flush()

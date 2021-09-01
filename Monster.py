@@ -1,4 +1,6 @@
-from Kernel import *
+from Kernel import Kernel
+from TermColor import *
+
 
 class Monster:
     peacefuls = [

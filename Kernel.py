@@ -1,9 +1,9 @@
 import re
-from myconstants import *
-from TermColor import *
+from FramebufferParser import *
 import sys
 
 import random
+
 
 class Kernel:
     instance = None
@@ -11,6 +11,7 @@ class Kernel:
     def __init__(self, env):
         self.signalReceivers = []
         self._file = open("logs/log.txt", "w")
+        self._frames_log = open("logs/frames.txt", "w")
 
         Kernel.instance = self
         self.env = env
@@ -23,6 +24,8 @@ class Kernel:
         self.reward = 0
         self.done = False
 
+        self.frame_buffer = FramebufferParser()
+
     def curLevel(self):
         return self.Dungeon.curBranch.curLevel
 
@@ -30,15 +33,33 @@ class Kernel:
         return self.Dungeon.curBranch.curLevel.tiles[Kernel.instance.Hero.x + Kernel.instance.Hero.y*WIDTH]
 
     def searchMap(self, regex):
-        return re.search(regex, self.FramebufferParser.mapLines())
+        return re.search(regex, self.frame_buffer.mapLines())
 
     def searchBot(self, regex):
-        return re.search(regex, self.FramebufferParser.botLines())
+        return re.search(regex, self.frame_buffer.botLines())
 
     def searchTop(self, regex):
-        return re.search(regex, self.FramebufferParser.topLine())
+        return re.search(regex, self.frame_buffer.topLine())
 
-    def screenParsed(self):
+    def top_line(self):
+        return self.frame_buffer.topLine()
+
+    def bot_line(self):
+        return self.frame_buffer.botLines()
+
+    def get_row_line(self, row):
+        return self.frame_buffer.getRowLine(row)
+
+    def map_tiles(self):
+        return self.frame_buffer.mapTiles()
+
+    def step(self):
+        y, x = self.obs['tty_cursor']
+        self.frame_buffer.parse(self.obs['tty_chars'], self.obs['tty_colors'])
+        self.frame_buffer.x = x
+        self.frame_buffer.y = y
+        self.logScreen()
+
         self.log("Updates starting: \n\n")
 
         self.log("--------- SENSES --------- ")
@@ -90,3 +111,14 @@ class Kernel:
         self.Personality.dontUpdate()
         self.Senses.dontUpdate()
 
+    def logScreen(self):
+        for y in range(0, HEIGHT):
+            self._frames_log.write("\n")
+            for x in range(0, WIDTH):
+                if y == HEIGHT-1 and x > WIDTH-5:
+                    break
+                self._frames_log.write(self.frame_buffer.screen[x+y*WIDTH].char)
+        if Kernel.instance.Dungeon.curBranch:
+            self._frames_log.write(str(Kernel.instance.curTile().coords()))
+            self._frames_log.write("\n"+str(self.frame_buffer.y)+","+str(self.frame_buffer.x))
+        self._frames_log.flush()

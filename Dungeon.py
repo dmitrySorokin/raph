@@ -20,9 +20,9 @@ class Dungeon(EeekObject):
 
         # I think we can set Hero's y,x here - should be no --More--'s and such
         # TODO: I should keep track of where Hero -should- be (Hero.move()) and at least try \x12 if no match
-        Kernel.instance.log("Setting Hero to (%d,%d)" % (Kernel.instance.FramebufferParser.x, Kernel.instance.FramebufferParser.y-1))
-        Kernel.instance.Hero.x = Kernel.instance.FramebufferParser.x
-        Kernel.instance.Hero.y = Kernel.instance.FramebufferParser.y-1
+        Kernel.instance.log("Setting Hero to (%d,%d)" % (Kernel.instance.frame_buffer.x, Kernel.instance.frame_buffer.y-1))
+        Kernel.instance.Hero.x = Kernel.instance.frame_buffer.x
+        Kernel.instance.Hero.y = Kernel.instance.frame_buffer.y-1
         if self.curBranch:
             Kernel.instance.log("Curtile is now (%s)" % str(Kernel.instance.curTile()))
 

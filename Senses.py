@@ -56,7 +56,7 @@ class Senses(EeekObject):
         if Kernel.instance.searchBot("the Werejackal"):
             Kernel.instance.Hero.isPolymorphed = True
 
-        top = Kernel.instance.FramebufferParser.topLine().replace("--More--", "")
+        top = Kernel.instance.top_line().replace("--More--", "")
         self.messages = self.messages + top.strip().split("  ")
         Kernel.instance.log(str(self.messages))
 
@@ -69,11 +69,11 @@ class Senses(EeekObject):
             self.call_potion(match)
 
         if Kernel.instance.searchTop("--More--"):
-            Kernel.instance.log("Found --More-- (%s)" % Kernel.instance.FramebufferParser.topLine())
+            Kernel.instance.log("Found --More-- (%s)" % Kernel.instance.top_line())
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
 
-        if Kernel.instance.FramebufferParser.getRowLine(2).find("--More--") >= 0:
+        if Kernel.instance.get_row_line(2).find("--More--") >= 0:
             Kernel.instance.log("Stupid graffiti ..")
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
@@ -89,7 +89,7 @@ class Senses(EeekObject):
             Kernel.instance.send("    ")
             Kernel.instance.dontUpdate()
 
-        elif Kernel.instance.FramebufferParser.getRowLine(3).find("Things that are here:") >= 0:
+        elif Kernel.instance.get_row_line(3).find("Things that are here:") >= 0:
             self.messages.append("Things that are here:")
             Kernel.instance.log("Found some items (row 3).")
             Kernel.instance.send("    ")
@@ -110,9 +110,9 @@ class Senses(EeekObject):
         if match:
             self.eat(match)
         elif match2:
-            self.eat_it(Kernel.instance.FramebufferParser.topLine())
+            self.eat_it(Kernel.instance.top_line())
         elif Kernel.instance.searchTop("\? \[(.*?)\]"):
-            Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.FramebufferParser.topLine())
+            Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.top_line())
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
 
@@ -143,7 +143,7 @@ class Senses(EeekObject):
              Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next,
              Kernel.instance.Hero.status) = list(map(int, match.groups())) + [None]
         else:
-            Kernel.instance.die('not matched' + Kernel.instance.FramebufferParser.botLines())
+            Kernel.instance.die('not matched' + Kernel.instance.bot_line())
 
         Kernel.instance.turns = 1
 

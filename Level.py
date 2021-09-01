@@ -40,9 +40,9 @@ class Level:
         return [tile for tile in self.tiles for item in tile.items if item.is_food()]
 
     def update(self):
-        FBTiles = Kernel.instance.FramebufferParser.mapTiles()
+        FBTiles = Kernel.instance.map_tiles()
         if len(FBTiles) != len(self.tiles):
-            Kernel.instance.die("Amount of tiles in mapTiles() or Level() is wrong.")
+            Kernel.instance.die("Amount of tiles in map_tiles() or Level() is wrong.")
 
         heroLast = Kernel.instance.curTile()
         for x in range(0, len(self.tiles)):
