@@ -11,7 +11,6 @@ class Kernel:
     def __init__(self, env):
         self.signalReceivers = []
         self._file = open("logs/log.txt", "w")
-        self.observers = []
 
         Kernel.instance = self
         self.env = env
@@ -61,9 +60,6 @@ class Kernel:
         for sr in self.signalReceivers:
             sr.signal(s, *args, **args2)
 
-    def addObserver(self, observer):
-        self.observers.append(observer)
-
     def send(self, line):
         for ch in line:
             self.log("Sent string:" + ch + ' ' + str(type(ch)))
@@ -71,12 +67,6 @@ class Kernel:
             self.obs, rew, self.done, info = self.env.step(self.action2id.get(ch))
             self.reward += rew
         Kernel.instance.drawString(f"reward {self.reward}")
-
-
-    def sockRecv(self, line):
-        self.log('sockRecv ' + line)
-        for observer in self.observers:
-            observer.parse(line)
 
     def log(self, str):
         self._file.write("%s"%str+"\n")

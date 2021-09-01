@@ -4,7 +4,6 @@ import time
 import re
 from Tile import *
 from SignalReceiver import *
-from SocketObserver import *
 from Kernel import *
 from EeekObject import *
 from TermColor import *
@@ -23,11 +22,10 @@ class FBTile:
         self.color = color
 
 
-class FramebufferParser(SignalReceiver, SocketObserver, EeekObject):
+class FramebufferParser(SignalReceiver, EeekObject):
     def __init__(self):
         EeekObject.__init__(self)
         SignalReceiver.__init__(self)
-        SocketObserver.__init__(self)
 
         self.gameStarted = False
         self.screen = []
