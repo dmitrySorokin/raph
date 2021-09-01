@@ -15,3 +15,16 @@ DIMA
 4. status and msg from nle, not from tty
 5. You are carrying too much to get through.                                       
 
+
+  File "/Users/sorokin/dev/raph/./nh.py", line 56, in <module>
+    aciton = Kernel.instance.step(obs)
+  File "/Users/sorokin/dev/raph/Kernel.py", line 85, in step
+    self.Senses.parseMessages()
+  File "/Users/sorokin/dev/raph/Senses.py", line 282, in parseMessages
+    func(match)
+  File "/Users/sorokin/dev/raph/Senses.py", line 217, in is_staircase_here
+    Kernel.instance.curTile().glyph = '<'
+  File "/Users/sorokin/dev/raph/Kernel.py", line 26, in curTile
+    return self.Dungeon.curBranch.curLevel.tiles[Kernel.instance.Hero.x + Kernel.instance.Hero.y*WIDTH]
+AttributeError: 'NoneType' object has no attribute 'curLevel'
+

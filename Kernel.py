@@ -8,25 +8,14 @@ import random
 class Kernel:
     instance = None
 
-    def __init__(self, env):
+    def __init__(self):
         self.signalReceivers = []
         self._file = open("logs/log.txt", "w")
         self._frames_log = open("logs/frames.txt", "w")
 
         Kernel.instance = self
-        self.env = env
-        self.obs = self.env.reset()
-        #print(self.obs.keys())
-        #print(self.obs['glyphs'].shape, self.obs['chars'].shape, self.obs['colors'].shape)
-        #print(self.obs['message'].shape)
-        #exit(0)
 
-        self.action2id = {
-            chr(action.value): action_id for action_id, action in enumerate(env._actions)
-        }
-
-        self.reward = 0
-        self.done = False
+        self.action = ''
 
         self.frame_buffer = FramebufferParser()
 
@@ -54,9 +43,11 @@ class Kernel:
     def map_tiles(self):
         return self.frame_buffer.mapTiles()
 
-    def step(self):
-        y, x = self.obs['tty_cursor']
-        self.frame_buffer.parse(self.obs)
+    def step(self, obs):
+        self.action = ''
+
+        y, x = obs['tty_cursor']
+        self.frame_buffer.parse(obs)
         self.frame_buffer.x = x
         self.frame_buffer.y = y
         self.logScreen()
@@ -72,7 +63,7 @@ class Kernel:
         Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, monster_level, \
         Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, \
         Kernel.instance.Hero.status, carrying_capacity, dungeon_number, \
-        level_number, unk = Kernel.instance.obs['blstats']
+        level_number, unk = obs['blstats']
 
         # unk == 64 -> Deaf
 
@@ -80,7 +71,6 @@ class Kernel:
             Kernel.instance.Hero.blind = True
         else:
             Kernel.instance.Hero.blind = False
-
 
         if Kernel.instance.searchBot("the Werejackal"):
             Kernel.instance.Hero.isPolymorphed = True
@@ -97,6 +87,7 @@ class Kernel:
         self.Personality.nextAction()
 
         self.log("\n\nUpdates ended.")
+        return self.action
 
     def addSignalReceiver(self, sr):
         self.signalReceivers.append(sr)
@@ -107,12 +98,7 @@ class Kernel:
             sr.signal(s, *args, **args2)
 
     def send(self, line):
-        for ch in line:
-            self.log("Sent string:" + ch + ' ' + str(type(ch)))
-            self.log("Sent string:" + ch + ' ' + str(self.action2id.get(ch)))
-            self.obs, rew, self.done, info = self.env.step(self.action2id.get(ch))
-            self.reward += rew
-        Kernel.instance.drawString(f"reward {self.reward}")
+        self.action = self.action + line
 
     def log(self, str):
         self._file.write("%s"%str+"\n")
