@@ -12,8 +12,10 @@ class Kernel:
         self.silent = silent
 
         self.signalReceivers = []
-        self._file = open("logs/log.txt", "w")
-        self._frames_log = open("logs/frames.txt", "w")
+
+        if not self.silent:
+            self._file = open("logs/log.txt", "w")
+            self._frames_log = open("logs/frames.txt", "w")
 
         Kernel.instance = self
 
@@ -109,8 +111,9 @@ class Kernel:
         self.action = self.action + line
 
     def log(self, str):
-        self._file.write("%s"%str+"\n")
-        self._file.flush()
+        if not self.silent:
+            self._file.write("%s"%str+"\n")
+            self._file.flush()
 
     def die(self, msg):
         self.stdout("\x1b[35m\x1b[3;1H%s\x1b[m\x1b[25;0f" % msg)
@@ -130,6 +133,9 @@ class Kernel:
         self.Senses.dontUpdate()
 
     def logScreen(self):
+        if self.silent:
+            return
+
         for y in range(0, HEIGHT):
             self._frames_log.write("\n")
             for x in range(0, WIDTH):
