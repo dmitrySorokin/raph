@@ -76,7 +76,7 @@ class Search:
                 return True
             else:
                 Kernel.instance.log("Recursing Search.can()..")
-                sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s\x1b[m" % (
+                Kernel.instance.stdout("\x1b[%dm\x1b[%d;%dH%s\x1b[m" % (
                     COLOR_BG_YELLOW, self.walkto.y, self.walkto.x, self.walkto.appearance()
                 ))
 

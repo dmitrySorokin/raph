@@ -8,7 +8,9 @@ import random
 class Kernel:
     instance = None
 
-    def __init__(self):
+    def __init__(self, silent):
+        self.silent = silent
+
         self.signalReceivers = []
         self._file = open("logs/log.txt", "w")
         self._frames_log = open("logs/frames.txt", "w")
@@ -18,6 +20,7 @@ class Kernel:
         self.action = ''
 
         self.frame_buffer = FramebufferParser()
+        self.stdout("\u001b[2J\u001b[0;0H")
 
     def curLevel(self):
         return self.Dungeon.curBranch.curLevel
@@ -50,6 +53,11 @@ class Kernel:
         self.frame_buffer.parse(obs)
         self.frame_buffer.x = x
         self.frame_buffer.y = y
+
+        for y in range(0, HEIGHT):
+            for x in range(0, WIDTH):
+                cur = self.frame_buffer.screen[x+y*WIDTH]
+                self.stdout("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
         self.logScreen()
 
         # TODO: use them
@@ -105,17 +113,16 @@ class Kernel:
         self._file.flush()
 
     def die(self, msg):
-        sys.stdout.write("\x1b[35m\x1b[3;1H%s\x1b[m\x1b[25;0f" % msg)
+        self.stdout("\x1b[35m\x1b[3;1H%s\x1b[m\x1b[25;0f" % msg)
         self.log(msg)
         exit()
 
     def drawString(self, msg):
         Kernel.instance.log("Currently -> "+msg)
-        sys.stdout.write("\x1b[35m\x1b[25;0H%s\x1b[m" % msg + " "*(240-len(msg)))
-        sys.stdout.flush()
+        self.stdout("\x1b[35m\x1b[25;0H%s\x1b[m" % msg + " "*(240-len(msg)))
 
     def addch(self, y, x, char, c=None):
-        sys.stdout.write("%s\x1b[%d;%dH%s\x1b[m" % (c and "\x1b[%dm" % c or "", y, x, char))
+        self.stdout("%s\x1b[%d;%dH%s\x1b[m" % (c and "\x1b[%dm" % c or "", y, x, char))
 
     def dontUpdate(self):
         self.Dungeon.dontUpdate()
@@ -133,3 +140,9 @@ class Kernel:
             self._frames_log.write(str(Kernel.instance.curTile().coords()))
             self._frames_log.write("\n"+str(self.frame_buffer.y)+","+str(self.frame_buffer.x))
         self._frames_log.flush()
+
+    def stdout(self, msg):
+        if not self.silent:
+            sys.stdout.write(msg)
+            sys.stdout.flush()
+

@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
-import Kernel
-import sys
 
+import Kernel
 from myconstants import *
 from Personality import *
 from Senses import *
@@ -22,7 +21,7 @@ import nle
 if __name__ == '__main__':
     # Initialize the Kernel
     env = gym.make("NetHackChallenge-v0", savedir='replays')
-    Kernel()
+    Kernel(silent=False)
 
     # Stuff
     Console()
@@ -43,7 +42,6 @@ if __name__ == '__main__':
 
     Kernel.instance.Personality.setBrain(curBrain)  # Default brain
 
-    sys.stdout.write("\u001b[2J\u001b[0;0H")
     done = False
     reward = 0
     obs = env.reset()

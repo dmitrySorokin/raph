@@ -1,7 +1,6 @@
 from Kernel import *
 from EeekObject import *
-import sys
-import time
+
 
 class Console(EeekObject):
     def __init__(self):
@@ -42,18 +41,16 @@ class Console(EeekObject):
             self.line = self.line + char
 
     def draw(self):
-        sys.stdout.write("\x1b[16;80H\x1b[1J\x1b[37m")
+        Kernel.instance.stdout("\x1b[16;80H\x1b[1J\x1b[37m")
+        Kernel.instance.stdout("\x1b[16;1H")
+        Kernel.instance.stdout('-' * 80)
+        Kernel.instance.stdout("\x1b[1;1;H")
 
-        sys.stdout.write("\x1b[16;1H")
-        sys.stdout.write('-' * 80)
-        sys.stdout.write("\x1b[1;1;H")
 
         printed = 1
         for line in self.buf[-14:]:
-            sys.stdout.write(line)
-            sys.stdout.write("\x1b[1E")
+            Kernel.instance.stdout(line)
+            Kernel.instance.stdout("\x1b[1E")
 
-        sys.stdout.write("> %s" % self.line)
-
-        sys.stdout.flush()
+        Kernel.instance.stdout("> %s" % self.line)
 

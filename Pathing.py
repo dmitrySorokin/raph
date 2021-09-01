@@ -1,6 +1,5 @@
 from EeekObject import *
 from Tile import *
-import sys
 
 class Pathing(EeekObject):
     def __init__(self):
@@ -124,9 +123,8 @@ class TileNode:
     def draw(self, color=41):
         a = self
         while a.parent != 0:
-            sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s\x1b[m" % (color, a.tile.y+2, a.tile.x+1, a.tile.appearance()))
+            Kernel.instance.stdout("\x1b[%dm\x1b[%d;%dH%s\x1b[m" % (color, a.tile.y+2, a.tile.x+1, a.tile.appearance()))
             a = a.parent
-        sys.stdout.flush()
 
     def isWalkable(self):
         a = self

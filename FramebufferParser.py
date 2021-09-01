@@ -1,4 +1,3 @@
-import sys
 from TermColor import *
 from myconstants import *
 
@@ -64,9 +63,3 @@ class FramebufferParser:
                 self.y = self.y + 1
             if self.y >= HEIGHT:
                 self.y = HEIGHT - 1
-
-        for y in range(0, HEIGHT):
-            for x in range(0, WIDTH):
-                cur = self.screen[x+y*WIDTH]
-                sys.stdout.write("\x1b[%dm\x1b[%d;%dH%s" % (cur.color.fg, y+1, x+1, cur.char))
-        sys.stdout.flush()

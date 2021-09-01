@@ -1,7 +1,7 @@
 from EeekObject import *
 from myconstants import *
 from Kernel import *
-import sys
+
 
 class Cursor(EeekObject):
     def __init__(self):
@@ -18,8 +18,7 @@ class Cursor(EeekObject):
         Kernel.instance.log("Cursor starts at (%d,%d)" % (self.y, self.x))
 
     def draw(self):
-        sys.stdout.write("\x1b[%d;%df" % (self.y+2, self.x+1))
-        sys.stdout.flush()
+        Kernel.instance.stdout("\x1b[%d;%df" % (self.y+2, self.x+1))
 
     def input(self, char):
         if char not in ['y','u','h','j','k','l','b','n','.']:
