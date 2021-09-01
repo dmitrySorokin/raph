@@ -39,10 +39,6 @@ class Kernel:
     def searchTop(self, regex):
         return re.search(regex, self.FramebufferParser.topLine())
 
-    def handleStartup(self):
-        Kernel.instance.send("\x1b")
-        pass
-
     def screenParsed(self):
         self.log("Updates starting: \n\n")
 
