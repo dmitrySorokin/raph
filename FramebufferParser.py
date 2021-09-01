@@ -16,70 +16,15 @@ class FBTile:
 
 class FramebufferParser:
     def __init__(self):
-
-        self.gameStarted = False
-        self.screen = []
-
-        self.state = ""
+        self.screen = [FBTile() for _ in range(WIDTH * HEIGHT)]
         self.y = 0
         self.x = 0
-
-        self.herox = 0
-        self.heroy = 0
-
         self.color = TermColor()
-
-        self.firstParse = True
-
-        for x in range(0, WIDTH*HEIGHT):
-            self.screen.append(FBTile())
-
-        self.ansi =\
-            {
-                "\xf0"     : "ignore",
-                "\x1b[m"   : "reset color",
-                "\x1b[0m"  : "reset color",
-                "\x1b[1m"  : "bold",
-                "\x1b[7m"  : "reverse",
-                "\x1b[?47l": "ignore",
-                "\x1b[?47h": "ignore",
-                "\x1b[?1l" : "ignore",
-                "\x1b8"    : "ignore",
-                "\x1b7"    : "ignore",
-                "\xff\xfcc": "ignore",
-                "\xfa"     : "ignore",
-                "\x00"     : "ignore",
-                "\x08"     : "backspace",
-                "\x0a"     : "LF",
-                "\x0a"     : "LF",
-                "\x0d"     : "CR",
-                "\x1b(B"   : "ignore",
-                "\x1b)0"   : "ignore",
-                "\x1b>"    : "ignore",
-                "\x1b[?1l" : "ignore",
-                "\x1b[H"   : "home",
-                "\x1b[J"   : "clear to end of screen",
-                "\x1b[0J"  : "clear to end of screen",
-                "\x1b[1J"  : "clear to beginning",
-                "\x1b[2J"  : "clear screen",
-                "\x1b[K"   : "clear to end of line",
-                "\x1b[A"   : "up",
-                "\x1b[B"   : "down",
-                "\x1b[C"   : "right",
-                "\x1b[D"   : "left",
-                "\x1by"    : "ignore",
-            }
-        for x in range(ord(' '), ord('~')+1):
-            self.ansi[chr(x)] = "print"
+        self.top_line = None
+        self.bot_line = None
 
     def mapTiles(self):
         return self.screen[WIDTH:-WIDTH*2]
-
-    def getChars(self):
-        return "".join(x.char for x in self.screen)
-
-    def mapLines(self):
-        return "".join(x.char for x in self.screen[WIDTH:-2*WIDTH])
 
     def topLine(self):
         return "".join(x.char for x in self.screen[:WIDTH])
@@ -97,10 +42,11 @@ class FramebufferParser:
         cur.set(char, self.color.copy())
         self.x = self.x+1
 
-    def parse(self, chars, colors):
+    def parse(self, obs):
         self.x, self.y = 0, 0
+        self.top_line = obs['message']
 
-        self.state = ""
+        chars, colors = obs['tty_chars'], obs['tty_colors']
 
         for char, color in zip(chars.reshape(-1), colors.reshape(-1)):
             char = chr(char)

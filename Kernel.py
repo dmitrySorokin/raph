@@ -16,6 +16,10 @@ class Kernel:
         Kernel.instance = self
         self.env = env
         self.obs = self.env.reset()
+        #print(self.obs.keys())
+        #print(self.obs['glyphs'].shape, self.obs['chars'].shape, self.obs['colors'].shape)
+        #print(self.obs['message'].shape)
+        #exit(0)
 
         self.action2id = {
             chr(action.value): action_id for action_id, action in enumerate(env._actions)
@@ -31,9 +35,6 @@ class Kernel:
 
     def curTile(self):
         return self.Dungeon.curBranch.curLevel.tiles[Kernel.instance.Hero.x + Kernel.instance.Hero.y*WIDTH]
-
-    def searchMap(self, regex):
-        return re.search(regex, self.frame_buffer.mapLines())
 
     def searchBot(self, regex):
         return re.search(regex, self.frame_buffer.botLines())
@@ -55,10 +56,34 @@ class Kernel:
 
     def step(self):
         y, x = self.obs['tty_cursor']
-        self.frame_buffer.parse(self.obs['tty_chars'], self.obs['tty_colors'])
+        self.frame_buffer.parse(self.obs)
         self.frame_buffer.x = x
         self.frame_buffer.y = y
         self.logScreen()
+
+        # TODO: use them
+        #herox, heroy, strength_percentage, monster_level, carrying_capacity, dungeon_number, level_number, unk
+
+        herox, heroy, strength_percentage, \
+        Kernel.instance.Hero.str, Kernel.instance.Hero.dex, Kernel.instance.Hero.con, \
+        Kernel.instance.Hero.int, Kernel.instance.Hero.wis, Kernel.instance.Hero.cha, \
+        Kernel.instance.score, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, \
+        Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curpw, \
+        Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, monster_level, \
+        Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next, Kernel.instance.turns, \
+        Kernel.instance.Hero.status, carrying_capacity, dungeon_number, \
+        level_number, unk = Kernel.instance.obs['blstats']
+
+        # unk == 64 -> Deaf
+
+        if Kernel.instance.searchBot("Blind"):
+            Kernel.instance.Hero.blind = True
+        else:
+            Kernel.instance.Hero.blind = False
+
+
+        if Kernel.instance.searchBot("the Werejackal"):
+            Kernel.instance.Hero.isPolymorphed = True
 
         self.log("Updates starting: \n\n")
 

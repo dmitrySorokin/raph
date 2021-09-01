@@ -53,9 +53,6 @@ class Senses(EeekObject):
         if Kernel.instance.searchTop("You die"):
             Kernel.instance.die("You died :(")
 
-        if Kernel.instance.searchBot("the Werejackal"):
-            Kernel.instance.Hero.isPolymorphed = True
-
         top = Kernel.instance.top_line().replace("--More--", "")
         self.messages = self.messages + top.strip().split("  ")
         Kernel.instance.log(str(self.messages))
@@ -115,46 +112,6 @@ class Senses(EeekObject):
             Kernel.instance.log("Found a prompt we can't handle: %s" % Kernel.instance.top_line())
             Kernel.instance.send(" ")
             Kernel.instance.dontUpdate()
-
-        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*HD:(\d+)\s*T:(\d+)")
-        # if match:
-        #     (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.hd, Kernel.instance.turns) = map(int, match.groups())
-        #     Kernel.instance.log('hui')
-        match_status = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*([a-zA-Z]+)")
-        match_status2 = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)\s*([a-zA-Z]+)\s([a-zA-Z]+)")
-        match = Kernel.instance.searchBot("Dlvl:(\d+)\s*\$:(\d+)\s*HP:(\d+)\((\d+)\)\s*Pw:(\d+)\((\d+)\)\s*AC:(\d+)\s*Xp:(\d+)\/(\d+)")
-
-        if match_status2:
-            Kernel.instance.log('match2 ' + str(match_status2.groups()))
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp, Kernel.instance.Hero.maxhp,
-            Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw, Kernel.instance.Hero.ac, Kernel.instance.Hero.xp,
-            Kernel.instance.Hero.xp_next, Kernel.instance.Hero.status, _) = list(map(
-                int, match_status2.groups()[:-2])) + list(match_status2.groups()[-2:])
-        elif match_status:
-            Kernel.instance.log('match1 ' + str(match_status.groups()) + str( list(map(int, match_status.groups()[:-1])) + [match_status.groups()[-1]]))
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
-             Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
-             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next,
-             Kernel.instance.Hero.status) = list(map(int, match_status.groups()[:-1])) + [match_status.groups()[-1]]
-        elif match:
-            Kernel.instance.log('match ' + str(match.groups()))
-            (Kernel.instance.Dungeon.dlvl, Kernel.instance.Hero.gold, Kernel.instance.Hero.curhp,
-             Kernel.instance.Hero.maxhp, Kernel.instance.Hero.curpw, Kernel.instance.Hero.maxpw,
-             Kernel.instance.Hero.ac, Kernel.instance.Hero.xp, Kernel.instance.Hero.xp_next,
-             Kernel.instance.Hero.status) = list(map(int, match.groups())) + [None]
-        else:
-            Kernel.instance.die('not matched' + Kernel.instance.bot_line())
-
-        Kernel.instance.turns = 1
-
-        match = Kernel.instance.searchBot("(\w+) the \w+.*?St:([^ ]+)\s+Dx:(\d+)\s+Co:(\d+)\s+In:(\d+)\s+Wi:(\d+)\s+Ch:(\d+)\s+(\w+)\s+S:(\d+)")
-        if match:
-            (Kernel.instance.Hero.name, Kernel.instance.Hero.str, Kernel.instance.Hero.dex, Kernel.instance.Hero.con, Kernel.instance.Hero.int, Kernel.instance.Hero.wis, Kernel.instance.Hero.cha, Kernel.instance.Hero.align, Kernel.instance.score) = match.groups()
-
-        if Kernel.instance.searchBot("Blind"):
-            Kernel.instance.Hero.blind = True
-        else:
-            Kernel.instance.Hero.blind = False
 
     def no_poly(self):
         Kernel.instance.Hero.isPolymorphed = False
