@@ -1,0 +1,32 @@
+
+Make him understand the difference of mines and main dungeon
+Make a PushBoulders() before Search()
+Tile().canMoveDiagonally instead of "is door and tile.x!=blahlbah"
+    Use this for tiles that I don't "fit" into
+    Check which way the door is in case someone digs both walls connected to it and Eeek gets confused
+Make him be aware of which monsters that are guaranteed to be hostile, and make him wait instead of approach the mob
+Make a HealSelf(), perhaps cooperating with a Retreat()
+Make .can() return the number of moves needed untill it's action can start performing so we can pick up stuff on the way to kicking a door
+
+DIMA
+1. diagonal moves (!) (check)
+2. fix bugs
+3. make it eat (done, but not crops)
+4. status and msg from nle, not from tty (nle's message is not full)
+5. You are carrying too much to get through. - temp fixed
+6. You can't move diagonally into an intact doorway. - temp fixed
+7. "Will you please leave your pick-axe outside?"
+8. Never mind.                   What do you want to wear? [*} - loops
+9. Call an orange potion - loops
+10 Get stack in shops
+11. "Hello stranger, who are you?" - me: Croseus
+"Please drop that gold and follow me." me: WHAT TO DO?
+'The guard gets angry!', 'You hit the guard.'
+12. 'Your left leg is in no shape for kicking.'
+13. 'Seems like something lootable over there.'
+
+
+      Other things that are here:
+                                         a hill orc corpse
+                                         a scimitar
+                                         --More--

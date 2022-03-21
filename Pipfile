@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torch = "*"
+einops = "*"
+hydra-core = "==1.0.6"
+hydra-colorlog = "*"
+aicrowd-api = "*"
+aicrowd-gym = "*"
+numpy = "*"
+scipy = "*"
+nle = ">=0.7.2"
+tqdm = "*"
+wandb = "*"
+nle-toolbox = {git = "https://github.com/ivannz/nle_toolbox.git"}
+minihack = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.8"

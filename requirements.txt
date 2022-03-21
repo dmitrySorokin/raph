@@ -1,0 +1,11 @@
+torch
+einops
+hydra-core==1.0.6
+hydra_colorlog
+aicrowd-api
+aicrowd-gym
+numpy
+scipy
+nle>=0.7.2
+tqdm
+wandb
